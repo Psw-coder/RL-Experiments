@@ -1,0 +1,38 @@
+# Python environments and bytecode
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test and tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Project-local caches and temporary files
+.cache/
+tmp/
+*.tmp
+*.log
+
+# Training outputs and checkpoints
+runs/
+*.pt
+*.pth
+*.ckpt
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*~
+
+# Local environment variables
+.env
+.env.*
+!.env.example

@@ -1,0 +1,22 @@
+{
+  "algorithm": "rpo",
+  "critic_target": "gae",
+  "total_timesteps": 50000000,
+  "num_envs": 16,
+  "rollout_length": 256,
+  "epochs": 4,
+  "num_minibatches": 4,
+  "learning_rate": 0.00025,
+  "gamma": 0.99,
+  "gae_lambda": 0.95,
+  "beta": 3.0,
+  "clip_coef": 0.1,
+  "next_clip_coef": 0.1,
+  "entropy_coef": 0.01,
+  "max_grad_norm": 0.5,
+  "seed": 0,
+  "device": "cuda",
+  "torch_threads": 4,
+  "save_every": 100,
+  "plot_every": 10
+}
