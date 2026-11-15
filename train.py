@@ -33,7 +33,7 @@ def main():
     cfg = json.loads(local_path(args.config).read_text())
     cfg.setdefault('plot_every', 10)
     cfg.setdefault('algorithm', 'rpo')
-    cfg.setdefault('critic_target', 'gae')
+    cfg.setdefault('critic_target', 'discounted')
     for key in ('algorithm', 'total_timesteps', 'num_envs', 'rollout_length', 'seed', 'device', 'plot_every', 'beta', 'critic_target'):
         if getattr(args, key) is not None:
             cfg[key] = getattr(args, key)

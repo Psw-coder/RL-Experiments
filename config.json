@@ -1,6 +1,6 @@
 {
   "algorithm": "rpo",
-  "critic_target": "gae",
+  "critic_target": "discounted",
   "total_timesteps": 50000000,
   "num_envs": 16,
   "rollout_length": 256,

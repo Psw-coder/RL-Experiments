@@ -1,6 +1,8 @@
-torch==2.6.0+cu124
+# PyTorch cu128 wheels support Blackwell (sm_120) and Python 3.13/3.14.
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.9.1+cu128
 gymnasium[atari]==1.2.2
 ale-py==0.12.1
-numpy==2.2.6
-opencv-python-headless==4.12.0.88
+numpy==2.3.5
+opencv-python-headless==4.13.0.90
 matplotlib==3.10.8

@@ -20,6 +20,8 @@ def main():
     p.add_argument('--device', choices=['cpu', 'cuda'], default='cuda')
     p.add_argument('--num-envs', type=int, default=16)
     p.add_argument('--rollout-length', type=int, default=256)
+    p.add_argument('--critic-target', choices=['gae', 'discounted'], default=None,
+                   help='Critic target; default uses config.json (discounted, as in the paper)')
     args = p.parse_args()
     if min(args.total_timesteps, args.episodes, args.num_envs, args.rollout_length) <= 0:
         p.error('counts must be positive')
@@ -34,9 +36,12 @@ def main():
     frozen_runtime.write_text(frozen_runtime.read_text().replace(
         'ROOT = Path(__file__).resolve().parent', 'ROOT = Path(' + repr(str(ROOT)) + ')'))
     cfg = json.loads((ROOT / 'config.json').read_text())
-    cfg.update(algorithm='rpo', critic_target='gae', seed=args.seed,
+    cfg.setdefault('critic_target', 'discounted')
+    cfg.update(algorithm='rpo', seed=args.seed,
                total_timesteps=args.total_timesteps, device=args.device,
                num_envs=args.num_envs, rollout_length=args.rollout_length)
+    if args.critic_target:
+        cfg['critic_target'] = args.critic_target
     config = out / 'base_config.json'
     config.write_text(json.dumps(cfg, indent=2))
     status = {'state': 'running', 'settings': vars(args), 'runs': {}}
@@ -83,13 +88,14 @@ def main():
                              'evaluation': evaluation}
             points = [r for r in rows if r['return_mean_100'] is not None]
             ax.plot([r['steps'] for r in points], [r['return_mean_100'] for r in points], label=f'beta={beta}')
-        ax.set(xlabel='Environment steps', ylabel='Training return (last 100 games)', title='Shared GAE critic, seed=' + str(args.seed))
+        ax.set(xlabel='Environment steps', ylabel='Training return (last 100 games)',
+               title=f'{cfg["critic_target"]} critic, seed={args.seed}')
         ax.legend()
         fig.tight_layout()
         fig.savefig(out / 'comparison.png', dpi=160)
         plt.close(fig)
         (out / 'summary.json').write_text(json.dumps(summary, indent=2))
-        lines = ['# Unified critic comparison', '', 'Both arms use GAE+V, the same RPO code path, and identical settings except beta.', '',
+        lines = ['# RPO beta ablation', '', f'Both arms use the {cfg["critic_target"]} critic, the same RPO code path, and identical settings except beta.', '',
                  '| beta | steps | training mean (last 100 games) | evaluation mean | evaluation std |',
                  '|---|---:|---:|---:|---:|']
         for beta, result in summary.items():

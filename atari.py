@@ -49,9 +49,10 @@ class SignReward(gym.RewardWrapper):
 
 
 def make_env(training=True):
-    # Match NoFrameskip-v4: no sticky actions, minimal action set, skip externally.
+    # Match gym 0.10.8 BreakoutNoFrameskip-v4 (the authors' environment):
+    # sticky actions p=0.25, minimal action set, frame skip applied below.
     env = gym.make('ALE/Breakout-v5', frameskip=1,
-                   repeat_action_probability=0.0, full_action_space=False)
+                   repeat_action_probability=0.25, full_action_space=False)
     env = gym.wrappers.RecordEpisodeStatistics(env)
     env = gym.wrappers.AtariPreprocessing(env, noop_max=30, frame_skip=4,
         screen_size=84, terminal_on_life_loss=False, grayscale_obs=True,

@@ -16,12 +16,14 @@ class Agent(nn.Module):
             nn.Linear(3136, 512), nn.ReLU())
         self.actor = nn.Linear(512, actions)
         self.critic = nn.Linear(512, 1)
+        # Match the authors' DeepRL layer_init (rpo_atari/deep_rl/network):
+        # gain 1.0 for the encoder, 1e-3 for both heads.
         for layer in self.modules():
             if isinstance(layer, (nn.Conv2d, nn.Linear)):
-                nn.init.orthogonal_(layer.weight, np.sqrt(2))
+                nn.init.orthogonal_(layer.weight, 1.0)
                 nn.init.zeros_(layer.bias)
-        nn.init.orthogonal_(self.actor.weight, 0.01)
-        nn.init.orthogonal_(self.critic.weight, 1.0)
+        nn.init.orthogonal_(self.actor.weight, 1e-3)
+        nn.init.orthogonal_(self.critic.weight, 1e-3)
 
     def forward(self, obs):
         features = self.encoder(obs.float() / 255.0)

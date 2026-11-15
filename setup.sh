@@ -5,7 +5,11 @@ cd "$PROJECT_DIR"
 if [[ ! -x "$VIRTUAL_ENV/bin/python" ]]; then
     python3 -m venv "$VIRTUAL_ENV"
 fi
-# CUDA 12.4 build matches the host NVIDIA 550 driver.
-"$VIRTUAL_ENV/bin/python" -m pip install --index-url https://pypi.org/simple 'https://download-r2.pytorch.org/whl/cu124/torch-2.6.0%2Bcu124-cp313-cp313-linux_x86_64.whl'
-"$VIRTUAL_ENV/bin/python" -m pip install --index-url https://pypi.org/simple -r requirements.txt
+# CUDA 12.8 wheels support Blackwell (sm_120) and the host driver.
+# requirements.txt adds the PyTorch cu128 index, so pip selects the
+# wheel matching this venv's Python version (3.13 or 3.14).
+# Set PIP_INDEX_URL to a faster mirror when pypi.org is slow.
+PIP_INDEX_URL="${PIP_INDEX_URL:-https://pypi.org/simple}"
+"$VIRTUAL_ENV/bin/python" -m pip install --index-url "$PIP_INDEX_URL" \
+    --extra-index-url https://download.pytorch.org/whl/cu128 -r requirements.txt
 "$VIRTUAL_ENV/bin/python" -m pip freeze > requirements.lock.txt

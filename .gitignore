@@ -25,6 +25,11 @@ runs/
 *.pth
 *.ckpt
 
+# Rendered episodes and media
+*.gif
+*.mp4
+!breakout.gif
+
 # Editors and operating systems
 .idea/
 .vscode/
